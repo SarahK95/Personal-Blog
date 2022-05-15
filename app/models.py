@@ -17,3 +17,13 @@ class Post():
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    
+class Comment():
+    id = db.Column(db.Integer, primary_key = True)
+    comment = db.Column(db.String)
+    comment_date = db.Column(db.DateTime)
+    comment_author = db.Column(db.String)
+    like_count = db.Column(db.Integer, default = 0)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))    
