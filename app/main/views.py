@@ -9,7 +9,7 @@ def index():
     return render_template('index.html')
 
 
-@main.route('post/<post_id>')
+@main.route('/post/<int:post_id>')
 def post(post_id):
     
     return render_template('post.html', id = post_id)
