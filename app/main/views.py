@@ -5,7 +5,7 @@ from ..models import Blog, Comment, User, Subscribers
 from flask_login import login_required, current_user
 from .forms import UpdateProfile, BlogForm,  CommentForm, UpdateBlogForm
 from .. import db
-import bleach
+
 
 from ..email import welcome_message
 from datetime import datetime
