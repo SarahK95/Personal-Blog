@@ -38,7 +38,7 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     blog_title = db.Column(db.String(100), nullable=False)
     blog_text = db.Column(db.Text)
-    date_posted = db.Column(db.DateTime)
+    posted_at = db.Column(db.DateTime)
     blog_by = db.Column(db.String)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -60,8 +60,8 @@ class Quote:
         self.author = author
         self.quote = quote       
         
-# class Subscribers(db.Model):
-#     __tablename__ = "subcribers"
-#     id = db.Column(db.Integer, primary_key = True)
-#     email = db.Column(db.String(255), unique = True, index = True)
+class Subscribers(db.Model):
+    __tablename__ = "subcribers"
+    id = db.Column(db.Integer, primary_key = True)
+    email = db.Column(db.String(255), unique = True, index = True)
         

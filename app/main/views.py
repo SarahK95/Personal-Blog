@@ -1,7 +1,7 @@
 from crypt import methods
 from flask import (render_template , request, redirect, url_for, abort)
 from . import main
-from ..models import Blog, Comment, User
+from ..models import Blog, Comment, User, Subscribers
 from flask_login import login_required, current_user
 from .forms import (UpdateProfile, BlogForm,  CommentForm, UpdateBlogForm)
 from .. import db
@@ -57,11 +57,61 @@ def edit_blog(id):
         edit_form.title.data=""
         blog.blog_text = edit_form.blog.data
         edit_form.blog.data=""
-        
         db.session.add(blog)
         db.session.commit()
         return redirect(url_for("main.blog", id = blog.id))
     return render_template("edit_blog.html", blog=blog, edit_form=edit_form)
 
+@main.route("/blog/new", methods = ["GET", "POST"])
+@login_required
+def new_blog():
+    blog_form = BlogForm()
+    if blog_form.validate_on_submit():
+        blog_title = blog_form.title.data
+        blog_form.title.data=""
+        new_blog = Blog(blog_title = blog_title, posted_at =datetime.now(), blog_by=current_user.now(),user_id =current_user.id)
+        new_blog.save_blog()       
+        return redirect(url_for("main.blog", id = new_blog))
+    return render_template("new_blog.html",blog_form = blog_form)
+
+@main.route("/profile/<int:id>", methods = ["GET", "POST"])
+def profile(id):
+    user = User.query.filter_by(id = id).first()
+    blogs = Blog.query.filter_by(user_id = id).all()
+    if request.method == "POST":
+        new_sub = Subscribers(email = request.form.get("subscriber"))
+        db.session.add(new_sub)
+        db.session.commit()
+        welcome_message("Thank you for subscribing!", "email/welcome", new_sub.email)
+        return render_template("profile/profile.html",user = user,blogs = blogs)
+  
+@main.route("/profile/<int:id>/<int:blog_id>/delete") 
+@login_required
+def delete_blog(id, blog_id): 
+    user = User.query.filter_by(id = id).first()
+    blog = Blog.query.filter_by(id = blog_id).first()
+    db.session.delete(blog)
+    db.session.commit()
+    return redirect(url_for("main.profile", id = user.id))
+
+@main.route("/profile/<int:id>/update", methods = ["GET", "POST"])
+@login_required
+def update_profile(id):
+    user = User.query.filter_by(id = id).first()
+    form = UpdateProfile()
+    if form.validate_on_submit():
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.email = form.email.data
+        user.bio = form.bio.data
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("main.profile", id = id))
+    return render_template("profile/update.html", user = user, form = form)
+    
+    
+     
+         
+        
 
         
