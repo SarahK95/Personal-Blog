@@ -7,7 +7,7 @@ from . import login_manager
 def user_loader(user_id):
     return User.query.get(int(user_id))
 
-class User():
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -33,7 +33,7 @@ class User():
         return f'User {self.username}'
       
     
-class Blog():
+class Blog(db.Model):
     __tablename__ = 'blogs'
     id = db.Column(db.Integer, primary_key=True)
     blog_title = db.Column(db.String(100), nullable=False)
@@ -45,7 +45,7 @@ class Blog():
     comments = db.relationship('Comment', foreign_keys = 'Comment.blog_id',backref = "blog",lazy = "dynamic")
     
   
-class Comment():
+class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key = True)
     comment = db.Column(db.String)
@@ -59,3 +59,9 @@ class Quote:
     def __init__(self,author,quote):
         self.author = author
         self.quote = quote       
+        
+# class Subscribers(db.Model):
+#     __tablename__ = "subcribers"
+#     id = db.Column(db.Integer, primary_key = True)
+#     email = db.Column(db.String(255), unique = True, index = True)
+        
