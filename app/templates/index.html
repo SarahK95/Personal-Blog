@@ -9,16 +9,16 @@
 </header>
 
 <h1 class="mb"> Posted by {{username}} ({{posts.total}})</h1>
-{% for post in posts.items %}
+{% for blog in blog.items %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + blog.author.image_file) }}">
          <div class="media-body">
             <div class="article-metadata">
-              <a href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+              <a href="{{ url_for('users.user_blog', username=blog.author.username) }}">{{ blog.author.username }}</a>
+              <small class="text-muted">{{ blog.date_posted.strftime('%Y-%m-%d') }}</small>
             </div>
-            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+            <h2><a class="article-title" href="{{ url_for('blogs.blog', blog_id=blog.id) }}">{{ blog.title }}</a></h2>
+            <p class="article-content">{{ blog.content }}</p>
         </div>
     </article>
 {%endfor%}    
