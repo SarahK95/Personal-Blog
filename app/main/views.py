@@ -1,26 +1,26 @@
 from crypt import methods
-from flask import (render_template , request, redirect, url_for, abort)
+from flask import render_template , request, redirect, url_for
 from . import main
 from ..models import Blog, Comment, User, Subscribers
 from flask_login import login_required, current_user
-from .forms import (UpdateProfile, BlogForm,  CommentForm, UpdateBlogForm)
+from .forms import UpdateProfile, BlogForm,  CommentForm, UpdateBlogForm
 from .. import db
-from ..requests import get_quote
+import bleach
+
 from ..email import welcome_message
 from datetime import datetime
+from app.requests import get_quote
 
 
 
 @main.route('/')
 def index():
-    blogs = Blog.get_all_blogs()
-    quote = get_quote()
-    
-    return render_template('index.html', blogs=blogs, quote =quote)
-
+    # blogs = Blog.get_all_posts
+    quote = get_quote()   
+    return render_template('index.html', quote =quote)
 
 @main.route('/blog/<int:blog_id>', methods = ["GET", "POST"])
-def blog(blog_id):
+def blog(id):   
     blog = Blog.query.filter_by(id = id). first()
     comments = Comment.query.filter_by(blog_id = id).all()
     comment_form = CommentForm()
@@ -46,8 +46,8 @@ def delete_comment(id, comment_id):
     db.session.commit()
     return redirect(url_for("main.blog", id = blog.id))
 
-@main.route("/post/<int:id>/update", methods = ["GET", "POST"])
-@login_required
+@main.route("/blog/<int:id>/update", methods = ["GET", "POST"])
+# @login_required
 def edit_blog(id):
     blog= Blog.query.filter_by(id = id).first()
     edit_form = UpdateBlogForm()
@@ -63,13 +63,14 @@ def edit_blog(id):
     return render_template("edit_blog.html", blog=blog, edit_form=edit_form)
 
 @main.route("/blog/new", methods = ["GET", "POST"])
-@login_required
+# @login_required
 def new_blog():
     blog_form = BlogForm()
     if blog_form.validate_on_submit():
         blog_title = blog_form.title.data
+        blog_text = blog_form.blog.data
         blog_form.title.data=""
-        new_blog = Blog(blog_title = blog_title, posted_at =datetime.now(), blog_by=current_user.now(),user_id =current_user.id)
+        new_blog = Blog(blog_title = blog_title, blog_text=blog_text)
         new_blog.save_blog()       
         return redirect(url_for("main.blog", id = new_blog))
     return render_template("new_blog.html",blog_form = blog_form)
@@ -86,7 +87,7 @@ def profile(id):
         return render_template("profile/profile.html",user = user,blogs = blogs)
   
 @main.route("/profile/<int:id>/<int:blog_id>/delete") 
-@login_required
+# @login_required
 def delete_blog(id, blog_id): 
     user = User.query.filter_by(id = id).first()
     blog = Blog.query.filter_by(id = blog_id).first()
@@ -95,7 +96,7 @@ def delete_blog(id, blog_id):
     return redirect(url_for("main.profile", id = user.id))
 
 @main.route("/profile/<int:id>/update", methods = ["GET", "POST"])
-@login_required
+# @login_required
 def update_profile(id):
     user = User.query.filter_by(id = id).first()
     form = UpdateProfile()

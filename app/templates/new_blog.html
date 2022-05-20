@@ -8,11 +8,11 @@
             <div class="col-md-2"></div>
             <div class="col-md-8">
                 <h3>Create a new blog post</h3>
-                <form method="blog">
+                <form method="post">
                     {{blog_form.hidden_tag()}}
                     {{blog_form.title.label}} {{blog_form.title(class = "form-control")}}
                     <br>
-                    {{blog_form.post.label}} {{blog_form.blog(id = "summernote")}}
+                    {{blog_form.blog.label}} {{blog_form.blog(id = "summernote")}}
                     <br>
                     {{blog_form.submit(class = "btn btn-primary")}}
                 </form>

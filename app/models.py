@@ -12,9 +12,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password_hash = db.Column(db.String(255))
-    blogs = db.relationship('Blog', backref='user', lazy="dynamic")
+    blog = db.relationship('Blog', backref='user', lazy="dynamic")
     comments = db.relationship('Blog', backref='user', lazy="dynamic")
     bio = db.Column(db.String())
 
@@ -41,7 +40,7 @@ class Blog(db.Model):
     posted_at = db.Column(db.DateTime)
     blog_by = db.Column(db.String)
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', foreign_keys = 'Comment.blog_id',backref = "blog",lazy = "dynamic")
     
   
@@ -51,9 +50,23 @@ class Comment(db.Model):
     comment = db.Column(db.String)
     comment_date = db.Column(db.DateTime)
     comment_author = db.Column(db.String)
-    like_count = db.Column(db.Integer, default = 0)
-    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))  
+    blog_id = db.Column(db.Integer, db.ForeignKey("blogs.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def delete_comment(cls, id):
+        gone = Comment.query.filter_by(id = id).first()
+        db.session.delete(gone)
+        db.session.commit()
+
+    @classmethod
+    def get_comments(cls,id):
+        comments = Comment.query.filter_by(blog_id = id).all()
+        return comments  
     
 class Quote:
     def __init__(self,author,quote):
