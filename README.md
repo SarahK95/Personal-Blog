@@ -5,12 +5,6 @@
 ## Live Site link
 You can view the live application by following this [link]().
 
-####  User view
-* User can view the blog posts on the site
-* User sees random quotes on the site
-* User can view the most recent posts
-* User can subscribe to blog mailing list and receives an email alert when a new post is made.
-* User can comment on blog posts
 
 
 ## Author
@@ -58,7 +52,5 @@ Here is a run through of how to set up the application:
     * Open your preferred browser and view the app by opening the link **http://127.0.0.1:5000/**.
 
 
-
-
-
 ## License
+License MIT Copyright (c) 2022 Sarah Kamunya
