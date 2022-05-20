@@ -45,3 +45,23 @@ def delete_comment(id, comment_id):
     db.session.delete(comment)
     db.session.commit()
     return redirect(url_for("main.blog", id = blog.id))
+
+@main.route("/post/<int:id>/update", methods = ["GET", "POST"])
+@login_required
+def edit_blog(id):
+    blog= Blog.query.filter_by(id = id).first()
+    edit_form = UpdateBlogForm()
+    
+    if edit_form.validate_on_submit():
+        blog.blog_title = edit_form.title.data
+        edit_form.title.data=""
+        blog.blog_text = edit_form.blog.data
+        edit_form.blog.data=""
+        
+        db.session.add(blog)
+        db.session.commit()
+        return redirect(url_for("main.blog", id = blog.id))
+    return render_template("edit_blog.html", blog=blog, edit_form=edit_form)
+
+
+        
