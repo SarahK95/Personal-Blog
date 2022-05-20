@@ -1,13 +1,4 @@
 from flask import Flask
-from config import DevConfig
-
-# Initializing application
-app = Flask(__name__)
-
-# Setting up configuration
-app.config.from_object(DevConfig)
-
-from app import viewsfrom flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_uploads import UploadSet, configure_uploads, IMAGES
